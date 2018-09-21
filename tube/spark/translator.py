@@ -165,4 +165,6 @@ class Gen3Translator(object):
         root_df = self.translate_table(self.parser.root_table, fields=self.parser.root_fields)
         root_df = self.get_direct_children(root_df)
         root_df = root_df.join(self.aggregate_nested_properties()).mapValues(lambda x: merge_dictionary(x[0], x[1]))
+        # just get the first document if duplicates exist
+        root_df = root_df.reduceByKey(lambda x,y: x)
         self.writer.write_df(root_df, self.parser.root)
