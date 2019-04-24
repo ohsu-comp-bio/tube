@@ -5,7 +5,6 @@ from .nodes.collecting_node import LeafNode
 from .parser import Parser
 from .lambdas import get_props_to_tuple, remove_props_from_tuple, get_frame_zero, \
     seq_aggregate_with_prop, merge_aggregate_with_prop, construct_project_id
-from tube.etl.indexers.base.prop import PropFactory
 
 
 class Translator(BaseTranslator):
@@ -91,6 +90,9 @@ class Translator(BaseTranslator):
                 if not collector.done and collector.no_parent_to_map == 0:
                     df = collected_collecting_dfs.get(collector.name, None)
                     for child in collector.children:
+                        if child.name == 'submitted_unaligned_reads':
+                            import pdb
+                            pdb.set_trace()
                         edge_df = None
                         if df is not None:
                             edge_tbl = child.parents[collector.name]
@@ -107,6 +109,8 @@ class Translator(BaseTranslator):
 
     def translate(self):
         collected_collecting_dfs, collected_leaf_dfs = self.merge_roots_to_children()
+        import pdb
+        pdb.set_trace()
         self.merge_collectors(collected_collecting_dfs)
         self.get_leaves(collected_collecting_dfs, collected_leaf_dfs)
         for (k, df) in collected_collecting_dfs.items():

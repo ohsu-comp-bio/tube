@@ -45,7 +45,7 @@ def run_transform(translators):
 
     for t in translators.values():
         df = t.translate_final()
-        t.write(df)
+        # t.write(df)
 
 
 def get_index_names(config):
