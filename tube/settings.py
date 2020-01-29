@@ -2,7 +2,7 @@ import os
 from cdislogging import get_logger
 from tube.config_helper import *
 from utils.general import get_resource_paths_from_yaml
-
+from urlparse import urlparse
 
 logger = get_logger(__name__)
 
@@ -24,21 +24,25 @@ JDBC = 'jdbc:postgresql://{}:{}/{}'.format(DB_HOST, DB_PORT, DB_DATABASE)
 PYDBC = 'postgresql://{}:{}@{}:{}/{}'.format(DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_DATABASE)
 DICTIONARY_URL = os.getenv('DICTIONARY_URL', 'https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json')
 ES_URL = os.getenv("ES_URL", "esproxy-service")
-
 HDFS_DIR = '/result'
 # Three modes: Test, Dev, Prod
 RUNNING_MODE = os.getenv('RUNNING_MODE', 'Dev')  # 'Prod' or 'Dev'
 
 PARALLEL_JOBS = 1
 
+url_parts = urlparse(ES_URL)
+
+
 ES = {
-    "es.nodes": ES_URL,
-    "es.port": '9200',
+    "es.nodes": url_parts.hostname,
+    "es.port": str(url_parts.port),
     "es.input.json": 'yes',
     "es.nodes.client.only": 'false',
     "es.nodes.discovery": 'false',
     "es.nodes.data.only": 'false',
-    "es.nodes.wan.only": 'true'
+    "es.nodes.wan.only": 'true',
+    "es.net.http.auth.user": url_parts.username,
+    "es.net.http.auth.pass": url_parts.password
 }
 
 HADOOP_HOME = os.getenv('HADOOP_HOME', '/usr/local/Cellar/hadoop/3.1.0/libexec/')

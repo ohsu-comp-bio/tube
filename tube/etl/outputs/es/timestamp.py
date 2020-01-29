@@ -1,3 +1,4 @@
+
 import re
 from datetime import datetime
 import calendar
@@ -72,6 +73,7 @@ def timestamp_from_transaction_time(dt):
 
 def get_timestamp_from_index(es, versioned_index):
     res = es.indices.get_alias(index=versioned_index, name="time_*")
+    print(res)
     iso_str = res[versioned_index]['aliases'].keys()[0].replace('plus', '+')[5:]
     return datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%S.%f")
 

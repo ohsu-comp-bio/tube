@@ -1,3 +1,4 @@
+
 import argparse
 import tube.settings as config
 import tube.etl.indexers.interpreter as interpreter
@@ -65,10 +66,8 @@ def config_by_args():
 
 def main():
     args = config_by_args()
-
-    es_hosts = config.ES['es.nodes']
-    es_port = config.ES['es.port']
-    es = Elasticsearch([{'host': es_hosts, 'port': es_port}])
+    print(config.ES_URL)
+    es = Elasticsearch([config.ES_URL])
     index_names = interpreter.get_index_names(config)
 
     if args.force or check_to_run_etl(es, index_names):
